@@ -1,0 +1,1112 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
+    <title>MR USMAN AI </title>
+    
+    <!-- Fonts -->
+    <link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@300;400;500;600;700;800&family=Outfit:wght@100;200;300;400;500;600;700;800;900&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+    
+    <!-- Three.js for 3D Background -->
+    <script type="importmap">
+        {
+            "imports": {
+                "three": "https://unpkg.com/three@0.128.0/build/three.module.js"
+            }
+        }
+    </script>
+    
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Outfit', 'Space Grotesk', sans-serif;
+            overflow: hidden;
+            color: #ffffff;
+        }
+
+        /* 3D Canvas Background */
+        #canvas3d {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            z-index: 0;
+            display: block;
+        }
+
+        /* Overlay Gradient */
+        .overlay-gradient {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: radial-gradient(circle at center, transparent 0%, rgba(0,0,0,0.3) 100%);
+            z-index: 1;
+            pointer-events: none;
+        }
+
+        /* Glow Effect */
+        .glow-overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: radial-gradient(circle at 50% 50%, rgba(0,255,255,0.05) 0%, transparent 70%);
+            z-index: 1;
+            pointer-events: none;
+            animation: glowPulse 4s ease-in-out infinite;
+        }
+
+        @keyframes glowPulse {
+            0%, 100% { opacity: 0.3; }
+            50% { opacity: 0.6; }
+        }
+
+        /* ============ APP CONTAINER ============ */
+        .app-container {
+            position: relative;
+            z-index: 2;
+            height: 100vh;
+            display: flex;
+            overflow: hidden;
+        }
+
+        /* ============ ULTRA PRO 3D MENU ============ */
+        .ultra-menu-3d {
+            width: 340px;
+            background: rgba(5, 5, 15, 0.75);
+            backdrop-filter: blur(25px);
+            border-right: 1px solid rgba(0, 255, 255, 0.2);
+            display: flex;
+            flex-direction: column;
+            transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+            position: relative;
+            z-index: 3;
+        }
+
+        /* Menu Header */
+        .menu-header-3d {
+            padding: 35px 25px;
+            border-bottom: 1px solid rgba(0, 255, 255, 0.2);
+            position: relative;
+            background: linear-gradient(135deg, rgba(0,255,255,0.05), transparent);
+        }
+
+        .logo-3d {
+            display: flex;
+            align-items: center;
+            gap: 15px;
+        }
+
+        .logo-icon-3d {
+            width: 55px;
+            height: 55px;
+            background: linear-gradient(135deg, #00FFFF, #FF00FF, #7000FF);
+            border-radius: 18px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            position: relative;
+            animation: iconPulse 3s ease-in-out infinite;
+        }
+
+        @keyframes iconPulse {
+            0%, 100% { transform: scale(1); box-shadow: 0 0 20px rgba(0,255,255,0.3); }
+            50% { transform: scale(1.05); box-shadow: 0 0 40px rgba(255,0,255,0.5); }
+        }
+
+        .logo-icon-3d i {
+            font-size: 28px;
+            color: white;
+        }
+
+        .logo-text-3d h1 {
+            font-size: 22px;
+            font-weight: 800;
+            background: linear-gradient(135deg, #FFFFFF, #00FFFF, #FF00FF);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            letter-spacing: -0.5px;
+        }
+
+        .logo-text-3d p {
+            font-size: 10px;
+            color: rgba(0, 255, 255, 0.7);
+            margin-top: 5px;
+            letter-spacing: 1.5px;
+        }
+
+        /* Menu Items */
+        .menu-items-3d {
+            flex: 1;
+            padding: 25px 18px;
+            overflow-y: auto;
+        }
+
+        .menu-category-3d {
+            margin-bottom: 30px;
+        }
+
+        .category-title-3d {
+            font-size: 11px;
+            font-weight: 700;
+            text-transform: uppercase;
+            letter-spacing: 3px;
+            color: rgba(0, 255, 255, 0.5);
+            margin-bottom: 18px;
+            padding-left: 12px;
+        }
+
+        .menu-item-3d {
+            display: flex;
+            align-items: center;
+            gap: 14px;
+            padding: 12px 16px;
+            margin: 5px 0;
+            border-radius: 14px;
+            cursor: pointer;
+            transition: all 0.3s;
+            color: rgba(255, 255, 255, 0.7);
+            font-weight: 500;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .menu-item-3d::before {
+            content: '';
+            position: absolute;
+            left: 0;
+            top: 0;
+            width: 0;
+            height: 100%;
+            background: linear-gradient(90deg, rgba(0, 255, 255, 0.2), transparent);
+            transition: width 0.3s;
+        }
+
+        .menu-item-3d:hover::before {
+            width: 100%;
+        }
+
+        .menu-item-3d:hover {
+            color: #00FFFF;
+            transform: translateX(8px);
+        }
+
+        .menu-item-3d.active {
+            background: linear-gradient(135deg, rgba(0, 255, 255, 0.15), rgba(255, 0, 255, 0.08));
+            color: #00FFFF;
+            border-left: 3px solid #00FFFF;
+        }
+
+        .menu-item-3d i {
+            width: 24px;
+            font-size: 18px;
+        }
+
+        .menu-badge-3d {
+            margin-left: auto;
+            background: rgba(0, 255, 255, 0.2);
+            padding: 3px 10px;
+            border-radius: 20px;
+            font-size: 9px;
+            font-weight: 700;
+            color: #00FFFF;
+        }
+
+        /* New Chat Button */
+        .new-chat-3d {
+            margin: 20px;
+            padding: 15px;
+            background: linear-gradient(135deg, #00FFFF, #FF00FF);
+            border: none;
+            border-radius: 18px;
+            color: white;
+            font-weight: 700;
+            font-size: 14px;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 12px;
+            transition: all 0.3s;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .new-chat-3d::after {
+            content: '';
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            width: 0;
+            height: 0;
+            background: rgba(255, 255, 255, 0.3);
+            border-radius: 50%;
+            transform: translate(-50%, -50%);
+            transition: width 0.5s, height 0.5s;
+        }
+
+        .new-chat-3d:hover::after {
+            width: 250px;
+            height: 250px;
+        }
+
+        /* Stats */
+        .stats-3d {
+            padding: 20px;
+            border-top: 1px solid rgba(0, 255, 255, 0.15);
+        }
+
+        .stat-item-3d {
+            background: rgba(0, 255, 255, 0.05);
+            border-radius: 14px;
+            padding: 14px;
+            margin-bottom: 10px;
+            transition: all 0.3s;
+        }
+
+        .stat-item-3d:hover {
+            background: rgba(0, 255, 255, 0.1);
+            transform: translateY(-3px);
+        }
+
+        /* ============ MAIN DASHBOARD ============ */
+        .main-dashboard-3d {
+            flex: 1;
+            display: flex;
+            flex-direction: column;
+            overflow: hidden;
+            position: relative;
+            z-index: 2;
+        }
+
+        /* Top Bar */
+        .top-bar-3d {
+            padding: 22px 35px;
+            background: rgba(5, 5, 15, 0.6);
+            backdrop-filter: blur(20px);
+            border-bottom: 1px solid rgba(0, 255, 255, 0.15);
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .ai-status-3d {
+            display: flex;
+            align-items: center;
+            gap: 14px;
+        }
+
+        .status-3d {
+            width: 10px;
+            height: 10px;
+            background: #00FF00;
+            border-radius: 50%;
+            animation: statusGlow 2s infinite;
+        }
+
+        @keyframes statusGlow {
+            0%, 100% { box-shadow: 0 0 0 0 rgba(0, 255, 0, 0.4); }
+            50% { box-shadow: 0 0 0 12px rgba(0, 255, 0, 0); }
+        }
+
+        /* Messages Area */
+        .messages-3d {
+            flex: 1;
+            overflow-y: auto;
+            padding: 35px;
+        }
+
+        .messages-3d::-webkit-scrollbar {
+            width: 5px;
+        }
+
+        .messages-3d::-webkit-scrollbar-track {
+            background: rgba(255, 255, 255, 0.05);
+            border-radius: 10px;
+        }
+
+        .messages-3d::-webkit-scrollbar-thumb {
+            background: linear-gradient(135deg, #00FFFF, #FF00FF);
+            border-radius: 10px;
+        }
+
+        /* Message Bubbles */
+        .msg-3d {
+            margin-bottom: 25px;
+            animation: messageFloat 0.5s ease;
+        }
+
+        @keyframes messageFloat {
+            from {
+                opacity: 0;
+                transform: translateY(30px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        .user-msg-3d {
+            display: flex;
+            justify-content: flex-end;
+        }
+
+        .ai-msg-3d {
+            display: flex;
+            justify-content: flex-start;
+        }
+
+        .bubble-3d {
+            max-width: 75%;
+            padding: 16px 24px;
+            border-radius: 24px;
+            position: relative;
+            backdrop-filter: blur(10px);
+        }
+
+        .user-msg-3d .bubble-3d {
+            background: linear-gradient(135deg, rgba(0, 255, 255, 0.2), rgba(255, 0, 255, 0.1));
+            border: 1px solid rgba(0, 255, 255, 0.4);
+            border-bottom-right-radius: 8px;
+        }
+
+        .ai-msg-3d .bubble-3d {
+            background: rgba(255, 255, 255, 0.05);
+            border: 1px solid rgba(0, 255, 255, 0.25);
+            border-bottom-left-radius: 8px;
+        }
+
+        /* Code Styling */
+        .bubble-3d pre {
+            background: rgba(0, 0, 0, 0.5);
+            padding: 14px;
+            border-radius: 12px;
+            overflow-x: auto;
+            margin: 12px 0;
+            border: 1px solid rgba(0, 255, 255, 0.2);
+        }
+
+        .bubble-3d code {
+            font-family: 'Courier New', monospace;
+            font-size: 13px;
+        }
+
+        /* Input Area */
+        .input-3d {
+            padding: 25px 35px;
+            background: rgba(5, 5, 15, 0.6);
+            backdrop-filter: blur(20px);
+            border-top: 1px solid rgba(0, 255, 255, 0.15);
+        }
+
+        .input-wrapper-3d {
+            display: flex;
+            gap: 12px;
+            align-items: flex-end;
+            background: rgba(0, 255, 255, 0.05);
+            border-radius: 22px;
+            padding: 8px 12px;
+            border: 1px solid rgba(0, 255, 255, 0.25);
+            transition: all 0.3s;
+        }
+
+        .input-wrapper-3d:focus-within {
+            border-color: #00FFFF;
+            box-shadow: 0 0 30px rgba(0, 255, 255, 0.25);
+        }
+
+        .input-3d-field {
+            flex: 1;
+            background: none;
+            border: none;
+            color: white;
+            font-size: 15px;
+            padding: 12px;
+            outline: none;
+            resize: none;
+            font-family: inherit;
+        }
+
+        .input-3d-field::placeholder {
+            color: rgba(255, 255, 255, 0.3);
+        }
+
+        .action-3d-btn {
+            width: 46px;
+            height: 46px;
+            background: rgba(0, 255, 255, 0.1);
+            border: 1px solid rgba(0, 255, 255, 0.25);
+            border-radius: 14px;
+            color: #00FFFF;
+            cursor: pointer;
+            transition: all 0.3s;
+        }
+
+        .action-3d-btn:hover {
+            background: rgba(0, 255, 255, 0.2);
+            transform: scale(1.05);
+        }
+
+        .send-3d-btn {
+            background: linear-gradient(135deg, #00FFFF, #FF00FF);
+            border: none;
+            padding: 0 30px;
+            border-radius: 16px;
+            color: white;
+            font-weight: 700;
+            cursor: pointer;
+            transition: all 0.3s;
+        }
+
+        .send-3d-btn:hover {
+            transform: scale(1.05);
+            box-shadow: 0 0 25px rgba(0, 255, 255, 0.4);
+        }
+
+        /* Typing Indicator */
+        .typing-3d {
+            display: flex;
+            gap: 6px;
+            padding: 14px 22px;
+            background: rgba(255, 255, 255, 0.05);
+            backdrop-filter: blur(10px);
+            border-radius: 20px;
+            width: fit-content;
+        }
+
+        .typing-3d span {
+            width: 8px;
+            height: 8px;
+            background: #00FFFF;
+            border-radius: 50%;
+            animation: typingBounce3d 1.4s infinite;
+        }
+
+        @keyframes typingBounce3d {
+            0%, 60%, 100% { transform: translateY(0); opacity: 0.4; }
+            30% { transform: translateY(-12px); opacity: 1; }
+        }
+
+        /* Mobile */
+        @media (max-width: 768px) {
+            .ultra-menu-3d {
+                position: fixed;
+                left: -340px;
+                z-index: 100;
+                height: 100vh;
+            }
+            
+            .ultra-menu-3d.open {
+                left: 0;
+            }
+            
+            .bubble-3d {
+                max-width: 90%;
+            }
+            
+            .top-bar-3d {
+                padding: 15px 20px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <!-- 3D Canvas -->
+    <canvas id="canvas3d"></canvas>
+    <div class="overlay-gradient"></div>
+    <div class="glow-overlay"></div>
+    
+    <div class="app-container">
+        <!-- 3D Menu -->
+        <div class="ultra-menu-3d" id="ultraMenu3d">
+            <div class="menu-header-3d">
+                <div class="logo-3d">
+                    <div class="logo-icon-3d">
+                        <i class="fas fa-crown"></i>
+                    </div>
+                    <div class="logo-text-3d">
+                        <h1>MR USMAN AI</h1>
+                        <p></p>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="menu-items-3d">
+                <!-- Core Features -->
+                <div class="menu-category-3d">
+                    <div class="category-title-3d"><i class="fas fa-gem"></i> CORE AI</div>
+                    
+                    <div class="menu-item-3d active" onclick="switchFeature('chat')">
+                        <i class="fas fa-comments"></i>
+                        <span>AI Conversation</span>
+                        <span class="menu-badge-3d">ULTRA</span>
+                    </div>
+                    
+                    <div class="menu-item-3d" onclick="switchFeature('code')">
+                        <i class="fas fa-code"></i>
+                        <span>Code Studio Pro</span>
+                        <span class="menu-badge-3d">9 Languages</span>
+                    </div>
+                    
+                    <div class="menu-item-3d" onclick="switchFeature('analysis')">
+                        <i class="fas fa-chart-pie"></i>
+                        <span>Data Analysis</span>
+                        <span class="menu-badge-3d">AI Powered</span>
+                    </div>
+                    
+                    <div class="menu-item-3d" onclick="switchFeature('creative')">
+                        <i class="fas fa-palette"></i>
+                        <span>Creative Suite</span>
+                        <span class="menu-badge-3d">Generative</span>
+                    </div>
+                </div>
+                
+                <!-- Advanced Tools -->
+                <div class="menu-category-3d">
+                    <div class="category-title-3d"><i class="fas fa-microchip"></i> ADVANCED</div>
+                    
+                    <div class="menu-item-3d" onclick="switchFeature('document')">
+                        <i class="fas fa-file-alt"></i>
+                        <span>Document Processor</span>
+                        <span class="menu-badge-3d">PDF/DOCX</span>
+                    </div>
+                    
+                    <div class="menu-item-3d" onclick="switchFeature('translate')">
+                        <i class="fas fa-language"></i>
+                        <span>Neural Translation</span>
+                        <span class="menu-badge-3d">100+ Lang</span>
+                    </div>
+                    
+                    <div class="menu-item-3d" onclick="switchFeature('vision')">
+                        <i class="fas fa-eye"></i>
+                        <span>Vision Analysis</span>
+                        <span class="menu-badge-3d">Multimodal</span>
+                    </div>
+                    
+                    <div class="menu-item-3d" onclick="switchFeature('voice')">
+                        <i class="fas fa-headset"></i>
+                        <span>Voice Synthesis</span>
+                        <span class="menu-badge-3d">Real-time</span>
+                    </div>
+                </div>
+                
+                <!-- Professional Suite -->
+                <div class="menu-category-3d">
+                    <div class="category-title-3d"><i class="fas fa-briefcase"></i> PROFESSIONAL</div>
+                    
+                    <div class="menu-item-3d" onclick="switchFeature('business')">
+                        <i class="fas fa-chart-line"></i>
+                        <span>Business Analytics</span>
+                        <span class="menu-badge-3d">Pro</span>
+                    </div>
+                    
+                    <div class="menu-item-3d" onclick="switchFeature('research')">
+                        <i class="fas fa-microscope"></i>
+                        <span>Research Assistant</span>
+                        <span class="menu-badge-3d">Academic</span>
+                    </div>
+                    
+                    <div class="menu-item-3d" onclick="switchFeature('legal')">
+                        <i class="fas fa-gavel"></i>
+                        <span>Legal Advisor</span>
+                        <span class="menu-badge-3d">Compliance</span>
+                    </div>
+                </div>
+                
+                <!-- AI Models -->
+                <div class="menu-category-3d">
+                    <div class="category-title-3d"><i class="fas fa-brain"></i> AI MODELS</div>
+                    
+                    <div class="menu-item-3d" onclick="switchModel('gemini')">
+                        <i class="fas fa-star"></i>
+                        <span>Gemini Ultra</span>
+                        <span class="menu-badge-3d">Active</span>
+                    </div>
+                    
+                    <div class="menu-item-3d" onclick="switchModel('gpt')">
+                        <i class="fas fa-robot"></i>
+                        <span>GPT-4 Level</span>
+                        <span class="menu-badge-3d">Soon</span>
+                    </div>
+                </div>
+            </div>
+            
+            <button class="new-chat-3d" onclick="newConversation()">
+                <i class="fas fa-plus-circle"></i>
+                <span>New Conversation</span>
+            </button>
+            
+            <div class="stats-3d">
+                <div class="stat-item-3d">
+                    <i class="fas fa-comment-dots" style="color: #00FFFF;"></i>
+                    <div style="font-size: 11px; color: rgba(255,255,255,0.5); margin-top: 6px;">Messages</div>
+                    <div style="font-size: 24px; font-weight: 700;" id="msgCount3d">0</div>
+                </div>
+                <div class="stat-item-3d">
+                    <i class="fas fa-clock" style="color: #FF00FF;"></i>
+                    <div style="font-size: 11px; color: rgba(255,255,255,0.5); margin-top: 6px;">Session Time</div>
+                    <div style="font-size: 14px; font-weight: 500;" id="sessionTime3d">00:00:00</div>
+                </div>
+            </div>
+        </div>
+        
+        <!-- Main Dashboard -->
+        <div class="main-dashboard-3d">
+            <div class="top-bar-3d">
+                <div class="ai-status-3d">
+                    <div class="status-3d"></div>
+                    <span style="font-weight: 600;">MR USMAN AI </span>
+                    <span style="font-size: 11px; background: rgba(0,255,255,0.2); padding: 4px 12px; border-radius: 20px;">
+                        <i class="fas fa-cube"></i> premium tool
+                    </span>
+                </div>
+                <button class="action-3d-btn" id="menuToggle3d" style="display: none;" onclick="toggleMobileMenu()">
+                    <i class="fas fa-bars"></i>
+                </button>
+            </div>
+            
+            <div class="messages-3d" id="messages3d">
+                <div class="msg-3d ai-msg-3d">
+                    <div class="bubble-3d">
+                        <i class="fas fa-crown" style="color: #00FFFF; font-size: 20px;"></i>
+                        <strong style="font-size: 22px; display: block; margin: 12px 0;">Welcome to Mr Usman Master AI Tool 😈🇵🇰</strong>
+                        <p style="line-height: 1.6;">FUTURE OF THIS AI TOOL CREDIT BY MR USMAN</p>
+                        <div style="display: grid; grid-template-columns: repeat(2, 1fr); gap: 12px; margin: 18px 0;">
+                            <div><i class="fas fa-code"></i> Code Generation</div>
+                            <div><i class="fas fa-chart-line"></i> Data Analysis</div>
+                            <div><i class="fas fa-language"></i> Translation</div>
+                            <div><i class="fas fa-palette"></i> Creative Content</div>
+                        </div>
+                        <div style="font-size: 10px; margin-top: 12px; opacity: 0.5;">● AI MODE IS ACTIVE </div>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="input-3d">
+                <div class="input-wrapper-3d">
+                    <textarea class="input-3d-field" id="messageInput3d" placeholder="Ask me anything in this 3D cinematic world..." rows="1"></textarea>
+                    <div style="display: flex; gap: 8px;">
+                        <button class="action-3d-btn" onclick="attachFile3d()" title="Attach">
+                            <i class="fas fa-paperclip"></i>
+                        </button>
+                        <button class="action-3d-btn" onclick="voiceInput3d()" title="Voice">
+                            <i class="fas fa-microphone"></i>
+                        </button>
+                        <button class="send-3d-btn" onclick="sendMessage3d()">
+                            <i class="fas fa-paper-plane"></i> Send
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    
+    <input type="file" id="fileInput3d" style="display: none;">
+    
+    <script type="module">
+        import * as THREE from 'three';
+        
+        // Setup Scene
+        const scene = new THREE.Scene();
+        scene.background = new THREE.Color(0x05050A);
+        scene.fog = new THREE.FogExp2(0x05050A, 0.002);
+        
+        // Camera
+        const camera = new THREE.PerspectiveCamera(75, window.innerWidth / window.innerHeight, 0.1, 1000);
+        camera.position.set(0, 2, 8);
+        camera.lookAt(0, 0, 0);
+        
+        // Renderer
+        const canvas = document.getElementById('canvas3d');
+        const renderer = new THREE.WebGLRenderer({ canvas, alpha: false });
+        renderer.setSize(window.innerWidth, window.innerHeight);
+        renderer.setPixelRatio(window.devicePixelRatio);
+        
+        // Lights
+        // Ambient Light
+        const ambientLight = new THREE.AmbientLight(0x404060);
+        scene.add(ambientLight);
+        
+        // Main Light
+        const mainLight = new THREE.DirectionalLight(0xffffff, 1);
+        mainLight.position.set(2, 5, 3);
+        scene.add(mainLight);
+        
+        // Colored Lights
+        const cyanLight = new THREE.PointLight(0x00FFFF, 0.5);
+        cyanLight.position.set(2, 3, 4);
+        scene.add(cyanLight);
+        
+        const magentaLight = new THREE.PointLight(0xFF00FF, 0.5);
+        magentaLight.position.set(-2, 3, 4);
+        scene.add(magentaLight);
+        
+        const blueLight = new THREE.PointLight(0x0066FF, 0.3);
+        blueLight.position.set(0, 1, 5);
+        scene.add(blueLight);
+        
+        // Animated Torus Knot (Main Centerpiece)
+        const geometry = new THREE.TorusKnotGeometry(1.2, 0.3, 200, 32, 3, 4);
+        const material = new THREE.MeshStandardMaterial({
+            color: 0x00FFFF,
+            emissive: 0x0066FF,
+            emissiveIntensity: 0.3,
+            metalness: 0.8,
+            roughness: 0.2,
+            wireframe: false
+        });
+        const torusKnot = new THREE.Mesh(geometry, material);
+        scene.add(torusKnot);
+        
+        // Inner Sphere with glow effect
+        const sphereGeo = new THREE.SphereGeometry(0.5, 64, 64);
+        const sphereMat = new THREE.MeshStandardMaterial({
+            color: 0xFF00FF,
+            emissive: 0xFF00FF,
+            emissiveIntensity: 0.2,
+            metalness: 0.9,
+            roughness: 0.1
+        });
+        const innerSphere = new THREE.Mesh(sphereGeo, sphereMat);
+        scene.add(innerSphere);
+        
+        // Floating Particles System
+        const particleCount = 2000;
+        const particlesGeometry = new THREE.BufferGeometry();
+        const particlesPositions = new Float32Array(particleCount * 3);
+        
+        for (let i = 0; i < particleCount; i++) {
+            particlesPositions[i * 3] = (Math.random() - 0.5) * 30;
+            particlesPositions[i * 3 + 1] = (Math.random() - 0.5) * 20;
+            particlesPositions[i * 3 + 2] = (Math.random() - 0.5) * 20 - 10;
+        }
+        
+        particlesGeometry.setAttribute('position', new THREE.BufferAttribute(particlesPositions, 3));
+        
+        const particlesMaterial = new THREE.PointsMaterial({
+            color: 0x00FFFF,
+            size: 0.05,
+            transparent: true,
+            opacity: 0.6,
+            blending: THREE.AdditiveBlending
+        });
+        
+        const particleSystem = new THREE.Points(particlesGeometry, particlesMaterial);
+        scene.add(particleSystem);
+        
+        // Second Particle System (Magenta)
+        const particlesGeo2 = new THREE.BufferGeometry();
+        const particlesPos2 = new Float32Array(1000 * 3);
+        
+        for (let i = 0; i < 1000; i++) {
+            particlesPos2[i * 3] = (Math.random() - 0.5) * 25;
+            particlesPos2[i * 3 + 1] = (Math.random() - 0.5) * 18;
+            particlesPos2[i * 3 + 2] = (Math.random() - 0.5) * 15;
+        }
+        
+        particlesGeo2.setAttribute('position', new THREE.BufferAttribute(particlesPos2, 3));
+        const particlesMat2 = new THREE.PointsMaterial({
+            color: 0xFF00FF,
+            size: 0.04,
+            transparent: true,
+            opacity: 0.5,
+            blending: THREE.AdditiveBlending
+        });
+        
+        const particleSystem2 = new THREE.Points(particlesGeo2, particlesMat2);
+        scene.add(particleSystem2);
+        
+        // Floating Rings
+        const ringGeo = new THREE.TorusGeometry(1.5, 0.05, 100, 200);
+        const ringMat = new THREE.MeshStandardMaterial({ color: 0x00FFFF, emissive: 0x0066FF, emissiveIntensity: 0.2 });
+        const ring = new THREE.Mesh(ringGeo, ringMat);
+        scene.add(ring);
+        
+        const ring2Geo = new THREE.TorusGeometry(1.8, 0.04, 100, 200);
+        const ring2Mat = new THREE.MeshStandardMaterial({ color: 0xFF00FF, emissive: 0x660066, emissiveIntensity: 0.2 });
+        const ring2 = new THREE.Mesh(ring2Geo, ring2Mat);
+        scene.add(ring2);
+        
+        // Stars background
+        const starGeo = new THREE.BufferGeometry();
+        const starCount = 1500;
+        const starPos = new Float32Array(starCount * 3);
+        
+        for (let i = 0; i < starCount; i++) {
+            starPos[i * 3] = (Math.random() - 0.5) * 200;
+            starPos[i * 3 + 1] = (Math.random() - 0.5) * 100;
+            starPos[i * 3 + 2] = (Math.random() - 0.5) * 80 - 40;
+        }
+        
+        starGeo.setAttribute('position', new THREE.BufferAttribute(starPos, 3));
+        const starMat = new THREE.PointsMaterial({ color: 0xffffff, size: 0.08, transparent: true, opacity: 0.4 });
+        const stars = new THREE.Points(starGeo, starMat);
+        scene.add(stars);
+        
+        // Animation variables
+        let time = 0;
+        
+        // Animate Lights
+        function animateLights() {
+            cyanLight.intensity = 0.4 + Math.sin(time * 2) * 0.2;
+            magentaLight.intensity = 0.4 + Math.cos(time * 2.3) * 0.2;
+            blueLight.intensity = 0.3 + Math.sin(time * 1.5) * 0.1;
+        }
+        
+        // Animation Loop
+        function animate() {
+            requestAnimationFrame(animate);
+            time += 0.01;
+            
+            // Rotate main objects
+            torusKnot.rotation.x = time * 0.5;
+            torusKnot.rotation.y = time * 0.3;
+            torusKnot.rotation.z = time * 0.2;
+            
+            innerSphere.rotation.x = time * 0.2;
+            innerSphere.rotation.y = time * 0.4;
+            
+            ring.rotation.x = Math.sin(time * 0.3) * 0.5;
+            ring.rotation.y = time * 0.2;
+            ring.rotation.z = Math.sin(time * 0.4) * 0.3;
+            
+            ring2.rotation.x = Math.cos(time * 0.25) * 0.5;
+            ring2.rotation.y = time * 0.15;
+            ring2.rotation.z = Math.sin(time * 0.35) * 0.3;
+            
+            // Rotate particle systems
+            particleSystem.rotation.y = time * 0.05;
+            particleSystem.rotation.x = Math.sin(time * 0.1) * 0.1;
+            particleSystem2.rotation.y = time * -0.04;
+            
+            stars.rotation.y = time * 0.01;
+            
+            animateLights();
+            
+            // Gentle camera movement
+            camera.position.x = Math.sin(time * 0.1) * 0.2;
+            camera.position.y = 2 + Math.sin(time * 0.2) * 0.1;
+            camera.lookAt(0, 0, 0);
+            
+            renderer.render(scene, camera);
+        }
+        
+        animate();
+        
+        // Handle window resize
+        window.addEventListener('resize', onWindowResize, false);
+        function onWindowResize() {
+            camera.aspect = window.innerWidth / window.innerHeight;
+            camera.updateProjectionMatrix();
+            renderer.setSize(window.innerWidth, window.innerHeight);
+        }
+    </script>
+    
+    <script>
+        let sessionId = 'session_' + Date.now();
+        let isProcessing = false;
+        let msgCount = 0;
+        let sessionStart = Date.now();
+        
+        // Session timer
+        setInterval(() => {
+            const elapsed = Math.floor((Date.now() - sessionStart) / 1000);
+            const hours = Math.floor(elapsed / 3600);
+            const minutes = Math.floor((elapsed % 3600) / 60);
+            const seconds = elapsed % 60;
+            document.getElementById('sessionTime3d').innerHTML = `${hours.toString().padStart(2,'0')}:${minutes.toString().padStart(2,'0')}:${seconds.toString().padStart(2,'0')}`;
+        }, 1000);
+        
+        // Auto-resize textarea
+        const textInput = document.getElementById('messageInput3d');
+        textInput.addEventListener('input', function() {
+            this.style.height = 'auto';
+            this.style.height = Math.min(this.scrollHeight, 100) + 'px';
+        });
+        
+        textInput.addEventListener('keydown', function(e) {
+            if (e.key === 'Enter' && !e.shiftKey) {
+                e.preventDefault();
+                sendMessage3d();
+            }
+        });
+        
+        async function sendMessage3d() {
+            const message = textInput.value.trim();
+            if (!message || isProcessing) return;
+            
+            addMessage3d(message, 'user');
+            textInput.value = '';
+            textInput.style.height = 'auto';
+            
+            showTyping3d();
+            isProcessing = true;
+            
+            try {
+                const response = await fetch('/api/chat', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ message: message, session_id: sessionId })
+                });
+                
+                const data = await response.json();
+                hideTyping3d();
+                
+                if (data.success) {
+                    addMessage3d(data.response, 'ai', data.html);
+                    msgCount++;
+                    document.getElementById('msgCount3d').innerHTML = msgCount;
+                } else {
+                    addMessage3d('System error. Please try again.', 'ai');
+                }
+            } catch(error) {
+                hideTyping3d();
+                addMessage3d('Network connection error.', 'ai');
+            }
+            
+            isProcessing = false;
+        }
+        
+        function addMessage3d(text, sender, htmlContent = null) {
+            const container = document.getElementById('messages3d');
+            const msgDiv = document.createElement('div');
+            msgDiv.className = `msg-3d ${sender === 'user' ? 'user-msg-3d' : 'ai-msg-3d'}`;
+            
+            const timestamp = new Date().toLocaleTimeString();
+            
+            if (htmlContent) {
+                msgDiv.innerHTML = `
+                    <div class="bubble-3d">
+                        ${htmlContent}
+                        <div style="font-size: 9px; margin-top: 12px; opacity: 0.4;">${timestamp}</div>
+                    </div>
+                `;
+            } else {
+                const formatted = marked.parse(text);
+                msgDiv.innerHTML = `
+                    <div class="bubble-3d">
+                        ${formatted}
+                        <div style="font-size: 9px; margin-top: 12px; opacity: 0.4;">${timestamp}</div>
+                    </div>
+                `;
+            }
+            
+            container.appendChild(msgDiv);
+            container.scrollTop = container.scrollHeight;
+        }
+        
+        function showTyping3d() {
+            const container = document.getElementById('messages3d');
+            const indicator = document.createElement('div');
+            indicator.id = 'typingIndicator3d';
+            indicator.className = 'msg-3d ai-msg-3d';
+            indicator.innerHTML = `
+                <div class="typing-3d">
+                    <span></span>
+                    <span></span>
+                    <span></span>
+                    <span style="margin-left: 10px; font-size: 12px;">MR USMAN AI is processing in 3D...</span>
+                </div>
+            `;
+            container.appendChild(indicator);
+            container.scrollTop = container.scrollHeight;
+        }
+        
+        function hideTyping3d() {
+            const indicator = document.getElementById('typingIndicator3d');
+            if (indicator) indicator.remove();
+        }
+        
+        function newConversation() {
+            sessionId = 'session_' + Date.now();
+            const container = document.getElementById('messages3d');
+            container.innerHTML = `
+                <div class="msg-3d ai-msg-3d">
+                    <div class="bubble-3d">
+                        ✨ <strong>New 3D Cinematic Session</strong><br><br>
+                        MR USMAN AI is ready in full 3D mode.<br>
+                        How can I assist you?
+                        <div style="font-size: 9px; margin-top: 12px; opacity: 0.4;">Just now</div>
+                    </div>
+                </div>
+            `;
+            msgCount = 0;
+            document.getElementById('msgCount3d').innerHTML = '0';
+        }
+        
+        function switchFeature(feature) {
+            addMessage3d(`🔄 Activating ${feature} module...`, 'ai');
+            document.querySelectorAll('.menu-item-3d').forEach(item => {
+                item.classList.remove('active');
+            });
+            event.currentTarget.classList.add('active');
+        }
+        
+        function switchModel(model) {
+            addMessage3d(`🤖 Loading ${model.toUpperCase()} AI model...`, 'ai');
+        }
+        
+        function attachFile3d() {
+            document.getElementById('fileInput3d').click();
+        }
+        
+        document.getElementById('fileInput3d').addEventListener('change', async function(e) {
+            const file = e.target.files[0];
+            if (!file) return;
+            
+            addMessage3d(`📎 Uploading: ${file.name}`, 'user');
+            
+            const formData = new FormData();
+            formData.append('file', file);
+            
+            try {
+                const response = await fetch('/api/upload', {
+                    method: 'POST',
+                    body: formData
+                });
+                const data = await response.json();
+                if (data.success) {
+                    addMessage3d(`✅ File processed in 3D Environment !\n\n${data.extracted_text || 'Ready.'}`, 'ai');
+                }
+            } catch(error) {
+                addMessage3d('Upload failed.', 'ai');
+            }
+        });
+        
+        function voiceInput3d() {
+            if ('webkitSpeechRecognition' in window) {
+                const recognition = new webkitSpeechRecognition();
+                recognition.lang = 'en-US';
+                recognition.onresult = function(event) {
+                    const text = event.results[0][0].transcript;
+                    document.getElementById('messageInput3d').value = text;
+                    sendMessage3d();
+                };
+                recognition.start();
+            } else {
+                addMessage3d('Voice input requires Chrome/Edge.', 'ai');
+            }
+        }
+        
+        function toggleMobileMenu() {
+            document.getElementById('ultraMenu3d').classList.toggle('open');
+        }
+        
+        if (window.innerWidth <= 768) {
+            document.getElementById('menuToggle3d').style.display = 'flex';
+        }
+    </script>
+</body>
+</html>
